@@ -1,0 +1,69 @@
+name: Lint
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI: true
+  CARGO_TERM_COLOR: always
+
+permissions:
+  contents: read
+  checks: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  lint_biome:
+    name: Biome
+    runs-on: macos-latest
+    timeout-minutes: 1
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v4
+
+      # https://github.com/mongolyy/reviewdog-action-biome
+      - name: Run Biome to review
+        uses: mongolyy/reviewdog-action-biome@v1
+        with:
+          fail_level: error
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+
+  lint_deno:
+    name: Deno check
+    runs-on: macos-latest
+    timeout-minutes: 2
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v4
+
+      # https://github.com/denoland/setup-deno
+      - name: Setup deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - run: deno check libs --all --doc
+
+  lint_typos:
+    name: Typos
+    # WARN: Using `macos-latest` will fail with the following _silenced_ error (workflow doesn't fail):
+    # /Users/runner/work/_actions/reviewdog/action-typos/v1/script.sh: line 21: /var/folders/84/5079cppj57s0lzywhyzcxkjc0000gn/T/tmp.c2hf5uwkQa/typos: cannot execute binary file
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v4
+
+      # https://github.com/reviewdog/action-typos
+      - name: Spell check with `typos`
+        uses: reviewdog/action-typos@v1
+        with:
+          fail_level: error
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/denoland/deno/refs/heads/main/cli/schemas/config-file.v1.json",
+  "workspace": ["libs/*"],
+  "tasks": {
+    "fix": {
+      "dependencies": ["fix:biome", "fix:typos"]
+    },
+    "fix:biome": "deno run --allow-all npm:@biomejs/biome@^2.0.0-beta.1 check . --verbose --write",
+    "fix:biome:format": "deno run --allow-all npm:@biomejs/biome@^2.0.0-beta.1 format . --verbose --write",
+    "fix:biome:js": "deno run --allow-all npm:@biomejs/biome@^2.0.0-beta.1 lint . --verbose --fix --unsafe",
+    "fix:typos": "typos --verbose --write-changes",
+    "lint": {
+      "dependencies": ["lint:biome", "lint:typos"]
+    },
+    "lint:biome": "deno run --allow-all npm:@biomejs/biome@^2.0.0-beta.1 check . --verbose",
+    "lint:biome:format": "deno run --allow-all npm:@biomejs/biome@^2.0.0-beta.1 format . --verbose",
+    "lint:biome:js": "deno run --allow-all npm:@biomejs/biome@^2.0.0-beta.1 lint . --verbose --unsafe",
+    "lint:typos": "typos --verbose"
+  }
+}

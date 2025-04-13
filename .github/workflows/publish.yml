@@ -1,0 +1,27 @@
+name: Publish
+
+on:
+    push:
+        branches: [main]
+
+permissions:
+    contents: read
+    id-token: write
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+    cancel-in-progress: true
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    publish:
+        runs-on: macos-latest
+        steps:
+            # https://github.com/actions/checkout
+            - uses: actions/checkout@v4
+
+            - name: Publish packages to JSR
+              run: npx jsr publish

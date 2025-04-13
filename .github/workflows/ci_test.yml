@@ -1,0 +1,33 @@
+name: Test
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ci_test:
+    name: Deno test
+    runs-on: macos-latest
+    timeout-minutes: 2
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v4
+
+      # https://github.com/denoland/setup-deno
+      - name: Setup deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - run: deno test
