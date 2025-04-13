@@ -1,0 +1,12 @@
+{
+  "name": "@xeho91/trait",
+  "version": "0.1.0",
+  "exports": {
+    "./display": "./src/display.ts"
+  },
+  "license": "MIT",
+  "publish": {
+    "exclude": ["src/**/*.test.ts"],
+    "include": ["src/", "README.md"]
+  }
+}
